@@ -9,6 +9,7 @@ import {
   userLoginReducer,
   userRegisterReducer,
   userUpdateProfileReducer,
+  userListReducer,
 } from './reducers/userReducers';
 import {
   orderCreateReducer,
@@ -25,10 +26,11 @@ const reducers = {
   userRegister: userRegisterReducer,
   userProfile: userProfileReducer,
   userUpdateProfile: userUpdateProfileReducer,
+  userList: userListReducer,
   orderCreate: orderCreateReducer,
   orderDetails: orderDetailsReducer,
   orderPay: orderPayReducer,
-  orderUserList: orderUserListReducer
+  orderUserList: orderUserListReducer,
 };
 
 const cartItemsFromStorage = localStorage.getItem('cartItems')
