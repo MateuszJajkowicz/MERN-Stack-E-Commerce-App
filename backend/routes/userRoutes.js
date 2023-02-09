@@ -5,6 +5,7 @@ import {
   getUserProfile,
   updateUserProfile,
   getUsers,
+  deleteUser,
 } from '../controllers/userController.js';
 import { isAdmin, protect } from '../middlewere/authMiddlewere.js';
 
@@ -16,5 +17,6 @@ router
   .route('/profile')
   .get(protect, getUserProfile)
   .put(protect, updateUserProfile);
+  router.route('/:id').delete(protect, isAdmin, deleteUser)
 
 export default router;
