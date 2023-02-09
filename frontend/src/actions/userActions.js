@@ -3,6 +3,7 @@ import {
   USER_PROFILE_FAIL,
   USER_PROFILE_REQUEST,
   USER_PROFILE_SUCCESS,
+  USER_PROFILE_RESET,
   USER_LOGIN_FAIL,
   USER_LOGIN_REQUEST,
   USER_LOGIN_SUCCESS,
@@ -14,6 +15,7 @@ import {
   USER_UPDATE_PROFILE_REQUEST,
   USER_UPDATE_PROFILE_SUCCESS,
 } from '../constants/userConstants';
+import { ORDER_USER_LIST_RESET } from '../constants/orderConstants';
 
 export const register = (name, email, password) => async (dispatch) => {
   try {
@@ -79,6 +81,8 @@ export const login = (email, password) => async (dispatch) => {
 export const logout = () => async (dispatch) => {
   localStorage.removeItem('userInfo');
   dispatch({ type: USER_LOGOUT });
+  dispatch({ type: USER_PROFILE_RESET });
+  dispatch({ type: ORDER_USER_LIST_RESET });
 };
 
 export const getUserProfile = (id) => async (dispatch, getState) => {
