@@ -4,24 +4,20 @@ import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import CheckoutSteps from '../components/CheckoutSteps';
-import { createOrder } from '../actions/orderAction';
+import { createOrder } from '../actions/orderActions';
 
 const PlaceOrderScreen = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const cart = useSelector((state) => state.cart);
+  const { cartDetails } = cart;
 
-  // Calculate prices
-  cart.itemsPrice = cart.cartItems
-    .reduce((acc, item) => acc + item.price * item.qty, 0)
-    .toFixed(2);
-
-  cart.shippingPrice = (cart.itemsPrice > 100 ? 0 : 10).toFixed(2);
-
-  cart.totalPrice = (
-    Number(cart.itemsPrice) + Number(cart.shippingPrice)
-  ).toFixed(2);
+  if (!cart.shippingAddress.address) {
+    navigate('/shipping');
+  } else if (!cart.paymentMethod) {
+    navigate('/payment');
+  }
 
   const orderCreate = useSelector((state) => state.orderCreate);
   const { order, success, error } = orderCreate;
@@ -39,9 +35,9 @@ const PlaceOrderScreen = () => {
         orderItems: cart.cartItems,
         shippingAddress: cart.shippingAddress,
         paymentMethod: cart.paymentMethod,
-        itemsPrice: cart.itemsPrice,
-        shippingPrice: cart.shippingPrice,
-        totalPrice: cart.totalPrice,
+        itemsPrice: cartDetails.itemsPrice,
+        shippingPrice: cartDetails.shippingPrice,
+        totalPrice: cartDetails.totalPrice,
       })
     );
   };
@@ -55,8 +51,9 @@ const PlaceOrderScreen = () => {
             <ListGroup.Item>
               <h2>Shipping</h2>
               <p>
-                <strong>Address:</strong> {cart.shippingAddress.address},{' '}
-                {cart.shippingAddress.city}, {cart.shippingAddress.postalCode},{' '}
+                <strong>Address: </strong>
+                {cart.shippingAddress.address}, {cart.shippingAddress.city}{' '}
+                {cart.shippingAddress.postalCode},{' '}
                 {cart.shippingAddress.country}
               </p>
             </ListGroup.Item>
@@ -64,7 +61,8 @@ const PlaceOrderScreen = () => {
             <ListGroup.Item>
               <h2>Payment Method</h2>
               <p>
-                <strong>Method:</strong> {cart.paymentMethod}
+                <strong>Method: </strong>
+                {cart.paymentMethod}
               </p>
             </ListGroup.Item>
 
@@ -104,23 +102,25 @@ const PlaceOrderScreen = () => {
         <Col md={4}>
           <Card>
             <ListGroup variant='flush'>
-              <ListGroup.Item>Summary</ListGroup.Item>
+              <ListGroup.Item>
+                <h2>Order Summary</h2>
+              </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Items</Col>
-                  <Col>${cart.itemsPrice}</Col>
+                  <Col>${cartDetails.itemsPrice}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Shipping</Col>
-                  <Col>${cart.shippingPrice}</Col>
+                  <Col>${cartDetails.shippingPrice}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Total</Col>
-                  <Col>${cart.totalPrice}</Col>
+                  <Col>${cartDetails.stotalPrice}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
@@ -130,7 +130,7 @@ const PlaceOrderScreen = () => {
                 <Button
                   type='button'
                   className='btn-block'
-                  disabled={cart.cartItems.length === 0}
+                  disabled={cart.cartItems === 0}
                   onClick={placeOrderHandler}
                 >
                   Place Order

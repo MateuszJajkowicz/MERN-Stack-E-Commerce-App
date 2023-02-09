@@ -11,7 +11,11 @@ import {
   Card,
 } from 'react-bootstrap';
 import Message from '../components/Message';
-import { addToCart, removeFromCart } from '../actions/cartActions';
+import {
+  addToCart,
+  removeFromCart,
+  saveCartDetails,
+} from '../actions/cartActions';
 
 const CartScreen = () => {
   const navigate = useNavigate();
@@ -21,12 +25,25 @@ const CartScreen = () => {
   const cart = useSelector((state) => state.cart);
 
   const { cartItems } = cart;
+  //  Calculate prices
+  const itemsPrice = cart.cartItems
+    .reduce((acc, item) => acc + item.price * item.qty, 0)
+    .toFixed(2);
+  const shippingPrice = (itemsPrice > 100 ? 0 : 10).toFixed(2);
+  const totalPrice = (Number(itemsPrice) + Number(shippingPrice)).toFixed(2);
 
   const removeFromCartHandler = (id) => {
     dispatch(removeFromCart(id));
   };
 
   const checkoutHandler = () => {
+    dispatch(
+      saveCartDetails({
+        itemsPrice: itemsPrice,
+        shippingPrice: shippingPrice,
+        totalPrice: totalPrice,
+      })
+    );
     navigate('/login?redirect=shipping');
   };
 
@@ -87,7 +104,11 @@ const CartScreen = () => {
           <ListGroup>
             <ListGroup.Item>
               <h2>
-                Subtotal ({cartItems.reduce((prev, item) => prev + item.qty, 0)}
+                Subtotal (
+                {cartItems.reduce(
+                  (prev, item) => Number(prev) + Number(item.qty),
+                  0
+                )}
                 ) items
               </h2>
               $

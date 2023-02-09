@@ -1,32 +1,59 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import { Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { getOrderDetails } from '../actions/orderAction';
+import { getOrderDetails } from '../actions/orderActions';
+import { ORDER_PAY_RESET } from '../constants/orderConstants';
+import PayPalCheckout from '../components/PayPalCheckout';
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 
 const OrderScreen = () => {
+  const initialOptions = {
+    'client-id': process.env.REACT_APP_PAYPAL_CLIENT_ID,
+    currency: 'USD',
+    intent: 'capture',
+  };
+
   const dispatch = useDispatch();
   const params = useParams();
+
+  const [skdReady, setSkdReady] = useState(false);
 
   const orderId = params.id;
 
   const orderDetails = useSelector((state) => state.orderDetails);
   const { order, loading, error } = orderDetails;
 
-  if (!loading && order) {
-    // Calculate price
-    order.itemsPrice = order.orderItems
-      .reduce((acc, item) => acc + item.price * item.qty, 0)
-      .toFixed(2);
-  }
+  const orderPay = useSelector((state) => state.orderPay);
+  const { loading: loadingPay, success: successPay } = orderPay;
 
   useEffect(() => {
-    if (!order || order._id !== orderId) {
+    const addPayPalScript = async () => {
+      const { data: clientId } = await axios.get('/api/config/paypal');
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&locale=en_US`;
+      script.async = true;
+      script.onload = () => {
+        setSkdReady(true);
+      };
+      document.body.appendChild(script);
+    };
+
+    if (!order || order._id !== orderId || successPay) {
+      dispatch({ type: ORDER_PAY_RESET });
       dispatch(getOrderDetails(orderId));
+    } else if (!order.isPaid) {
+      if (!window.paypal) {
+        addPayPalScript();
+      } else {
+        setSkdReady(true);
+      }
     }
-  }, [dispatch, order, orderId]);
+  }, [dispatch, order, orderId, successPay]);
 
   return loading ? (
     <Loader />
@@ -96,7 +123,8 @@ const OrderScreen = () => {
                           </Link>
                         </Col>
                         <Col md={4}>
-                          {item.qty} x ${item.price} = ${item.qty * item.price}
+                          {item.qty} x ${item.price} = $
+                          {(item.qty * item.price).toFixed(2)}
                         </Col>
                       </Row>
                     </ListGroup.Item>
@@ -128,6 +156,18 @@ const OrderScreen = () => {
                   <Col>${order.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
+              {!order.isPaid && (
+                <ListGroup.Item>
+                  {loadingPay && <Loader />}
+                  {!skdReady ? (
+                    <Loader />
+                  ) : (
+                    <PayPalScriptProvider options={initialOptions}>
+                      <PayPalCheckout amout={order.totalPrice} />
+                    </PayPalScriptProvider>
+                  )}
+                </ListGroup.Item>
+              )}
             </ListGroup>
           </Card>
         </Col>
