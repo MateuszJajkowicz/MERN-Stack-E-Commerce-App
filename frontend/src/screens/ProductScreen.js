@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Row,
@@ -15,6 +15,7 @@ import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { listProductDetails } from '../actions/productActions';
 import { addToCart } from '../actions/cartActions';
+import { PRODUCT_DETAILS_RESET } from '../constants/productConstants';
 
 const ProductScreen = () => {
   const params = useParams();
@@ -38,11 +39,16 @@ const ProductScreen = () => {
     navigate('/cart');
   };
 
+  const goBackHandler = () => {
+    dispatch({ type: PRODUCT_DETAILS_RESET });
+    navigate('/');
+  };
+
   return (
     <>
-      <Link className='btn btn-light my-3' to='/'>
+      <Button className='btn btn-light my-3' onClick={goBackHandler}>
         Go Back
-      </Link>
+      </Button>
       {loading ? (
         <Loader />
       ) : error ? (
