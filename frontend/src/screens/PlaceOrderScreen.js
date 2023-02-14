@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import CheckoutSteps from '../components/CheckoutSteps';
 import { createOrder } from '../actions/orderActions';
+import { CART_RESET_ITEM } from '../constants/cartConstants';
 
 const PlaceOrderScreen = () => {
   const dispatch = useDispatch();
@@ -40,6 +41,7 @@ const PlaceOrderScreen = () => {
         totalPrice: cartDetails.totalPrice,
       })
     );
+    dispatch({ type: CART_RESET_ITEM });
   };
 
   return (
