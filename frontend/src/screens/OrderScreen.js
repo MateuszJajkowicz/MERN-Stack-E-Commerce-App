@@ -1,16 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link, useParams } from 'react-router-dom';
-import { Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import {
+  Row,
+  Col,
+  ListGroup,
+  Image,
+  Card,
+  Button,
+  Form,
+} from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { getOrderDetails } from '../actions/orderActions';
-import { ORDER_PAY_RESET } from '../constants/orderConstants';
+import { changeOrderStatus, getOrderDetails } from '../actions/orderActions';
+import {
+  ORDER_PAY_RESET,
+  ORDER_STATUS_RESET,
+} from '../constants/orderConstants';
 import PayPalCheckout from '../components/PayPalCheckout';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 
 const OrderScreen = () => {
+  const statusOptions = [
+    'Waiting for payment',
+    'In preparation',
+    'Dispatched',
+    'Cancelled',
+    'Returned',
+  ];
+
+  const [status, setStatus] = useState('');
+
   const initialOptions = {
     'client-id': process.env.REACT_APP_PAYPAL_CLIENT_ID,
     currency: 'USD',
@@ -19,6 +40,7 @@ const OrderScreen = () => {
 
   const dispatch = useDispatch();
   const params = useParams();
+  const navigate = useNavigate();
 
   const [skdReady, setSkdReady] = useState(false);
 
@@ -30,7 +52,17 @@ const OrderScreen = () => {
   const orderPay = useSelector((state) => state.orderPay);
   const { loading: loadingPay, success: successPay } = orderPay;
 
+  const orderStatus = useSelector((state) => state.orderStatus);
+  const { loading: loadingSend, success: successSend } = orderStatus;
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   useEffect(() => {
+    if (!userInfo) {
+      navigate('/login');
+    }
+
     const addPayPalScript = async () => {
       const { data: clientId } = await axios.get('/api/config/paypal');
       const script = document.createElement('script');
@@ -43,8 +75,9 @@ const OrderScreen = () => {
       document.body.appendChild(script);
     };
 
-    if (!order || order._id !== orderId || successPay) {
+    if (!order || order._id !== orderId || successPay || successSend) {
       dispatch({ type: ORDER_PAY_RESET });
+      dispatch({ type: ORDER_STATUS_RESET });
       dispatch(getOrderDetails(orderId));
     } else if (!order.isPaid) {
       if (!window.paypal) {
@@ -52,8 +85,14 @@ const OrderScreen = () => {
       } else {
         setSkdReady(true);
       }
+    } else {
+      setStatus(order.status);
     }
-  }, [dispatch, order, orderId, successPay]);
+  }, [dispatch, navigate, order, orderId, successPay, successSend, userInfo]);
+
+  const updateStatusHandler = () => {
+    dispatch(changeOrderStatus(order._id, status));
+  };
 
   return loading ? (
     <Loader />
@@ -79,9 +118,9 @@ const OrderScreen = () => {
                 {order.shippingAddress.city}, {order.shippingAddress.postalCode}
                 , {order.shippingAddress.country}
               </p>
-              {order.isDelivered ? (
+              {order.status === 'Dispatched' ? (
                 <Message variant='success'>
-                  Delivered on {order.deliveredAt}
+                  Sent on {order.sentAt.substring(0, 10)}
                 </Message>
               ) : (
                 <Message variant='danger'>Not Delivered</Message>
@@ -94,7 +133,9 @@ const OrderScreen = () => {
                 <strong>Method:</strong> {order.paymentMethod}
               </p>
               {order.isPaid ? (
-                <Message variant='success'>Paid on {order.paidAt}</Message>
+                <Message variant='success'>
+                  Paid on {order.paidAt.substring(0, 10)}
+                </Message>
               ) : (
                 <Message variant='danger'>Not Paid</Message>
               )}
@@ -111,7 +152,7 @@ const OrderScreen = () => {
                       <Row>
                         <Col md={1}>
                           <Image
-                            src={item.image}
+                            src={`${process.env.REACT_APP_IP}${item.image}`}
                             alt={item.name}
                             fluid
                             rounded
@@ -168,6 +209,34 @@ const OrderScreen = () => {
                   )}
                 </ListGroup.Item>
               )}
+
+              {loadingSend && <Loader />}
+              {userInfo &&
+                userInfo.isAdmin &&
+                order.isPaid &&
+                !order.isSent && (
+                  <ListGroup.Item>
+                    <Form.Control
+                      as='select'
+                      value={status}
+                      onChange={(e) => setStatus(e.target.value)}
+                      className='mb-3'
+                    >
+                      {statusOptions.map((option, i) => (
+                        <option key={i + 1} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </Form.Control>
+                    <Button
+                      type='button'
+                      className='btn btn-block'
+                      onClick={updateStatusHandler}
+                    >
+                      Update
+                    </Button>
+                  </ListGroup.Item>
+                )}
             </ListGroup>
           </Card>
         </Col>

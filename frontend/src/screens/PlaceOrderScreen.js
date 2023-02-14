@@ -77,7 +77,7 @@ const PlaceOrderScreen = () => {
                       <Row>
                         <Col md={1}>
                           <Image
-                            src={item.image}
+                            src={`${process.env.REACT_APP_IP}${item.image}`}
                             alt={item.name}
                             fluid
                             rounded
@@ -89,7 +89,8 @@ const PlaceOrderScreen = () => {
                           </Link>
                         </Col>
                         <Col md={4}>
-                          {item.qty} x ${item.price} = ${item.qty * item.price}
+                          {item.qty} x ${item.price} = $
+                          {(item.qty * item.price).toFixed(2)}
                         </Col>
                       </Row>
                     </ListGroup.Item>
@@ -120,7 +121,7 @@ const PlaceOrderScreen = () => {
               <ListGroup.Item>
                 <Row>
                   <Col>Total</Col>
-                  <Col>${cartDetails.stotalPrice}</Col>
+                  <Col>${cartDetails.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>

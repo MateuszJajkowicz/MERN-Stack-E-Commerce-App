@@ -59,12 +59,22 @@ const orderSchema = mongoose.Schema(
     paidAt: {
       type: Date,
     },
-    isDelivered: {
-      type: Boolean,
+    status: {
+      type: String,
+      enum: {
+        values: [
+          'Waiting for payment',
+          'In preparation',
+          'Dispatched',
+          'Cancelled',
+          'Returned',
+        ],
+        message: '{VALUE} is not supported',
+      },
       required: true,
-      default: false,
+      default: 'Waiting for payment',
     },
-    deliveredAt: {
+    sentAt: {
       type: Date,
     },
   },
