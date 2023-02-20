@@ -37,7 +37,7 @@ const OrderScreen = () => {
     currency: 'USD',
     intent: 'capture',
   };
-
+  
   const dispatch = useDispatch();
   const params = useParams();
   const navigate = useNavigate();
@@ -75,7 +75,12 @@ const OrderScreen = () => {
       document.body.appendChild(script);
     };
 
-    if (!order || order._id !== orderId || successPay || successSend) {
+    if (
+      !order ||
+      (order && order._id !== orderId) ||
+      successPay ||
+      successSend
+    ) {
       dispatch({ type: ORDER_PAY_RESET });
       dispatch({ type: ORDER_STATUS_RESET });
       dispatch(getOrderDetails(orderId));
