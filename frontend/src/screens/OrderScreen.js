@@ -20,6 +20,7 @@ import {
 } from '../constants/orderConstants';
 import PayPalCheckout from '../components/PayPalCheckout';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
+import Meta from '../components/Meta';
 
 const OrderScreen = () => {
   const statusOptions = [
@@ -37,7 +38,7 @@ const OrderScreen = () => {
     currency: 'USD',
     intent: 'capture',
   };
-  
+
   const dispatch = useDispatch();
   const params = useParams();
   const navigate = useNavigate();
@@ -105,6 +106,7 @@ const OrderScreen = () => {
     <Message variant='danger'>{error}</Message>
   ) : (
     <>
+      <Meta title='E-Commerce | Order' />
       <h1>Order {order._id}</h1>
       <Row>
         <Col md={8}>
