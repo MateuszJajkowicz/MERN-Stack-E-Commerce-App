@@ -26,7 +26,7 @@ const OrderScreen = () => {
   const statusOptions = [
     'Waiting for payment',
     'In preparation',
-    'Dispatched',
+    'Sent',
     'Cancelled',
     'Returned',
   ];
@@ -125,12 +125,12 @@ const OrderScreen = () => {
                 {order.shippingAddress.city}, {order.shippingAddress.postalCode}
                 , {order.shippingAddress.country}
               </p>
-              {order.status === 'Dispatched' ? (
+              {order.status === 'Sent' ? (
                 <Message variant='success'>
                   Sent on {order.sentAt.substring(0, 10)}
                 </Message>
               ) : (
-                <Message variant='danger'>Not Delivered</Message>
+                <Message variant='danger'>Not Sent</Message>
               )}
             </ListGroup.Item>
 
@@ -159,7 +159,7 @@ const OrderScreen = () => {
                       <Row>
                         <Col md={1}>
                           <Image
-                            src={`${process.env.REACT_APP_IP}${item.image}`}
+                            src={`${item.image}`}
                             alt={item.name}
                             fluid
                             rounded

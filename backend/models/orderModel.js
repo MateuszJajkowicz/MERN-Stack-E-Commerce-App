@@ -65,7 +65,7 @@ const orderSchema = mongoose.Schema(
         values: [
           'Waiting for payment',
           'In preparation',
-          'Dispatched',
+          'Sent',
           'Cancelled',
           'Returned',
         ],

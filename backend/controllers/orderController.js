@@ -87,7 +87,7 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
 
   if (order && order.user._id.toString() === req.user._id.toString()) {
     order.status = status;
-    if (status === 'Dispatched') {
+    if (status === 'Sent') {
       order.isSent = true;
       order.sentAt = Date.now();
     }

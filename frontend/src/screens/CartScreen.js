@@ -64,7 +64,7 @@ const CartScreen = () => {
                   <Row>
                     <Col md={2}>
                       <Image
-                        src={`${process.env.REACT_APP_IP}${item.image}`}
+                        src={`${item.image}`}
                         alt={item.name}
                         fluid
                         rounded
