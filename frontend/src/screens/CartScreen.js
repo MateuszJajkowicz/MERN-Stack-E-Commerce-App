@@ -63,12 +63,21 @@ const CartScreen = () => {
                 <ListGroup.Item key={item.product}>
                   <Row>
                     <Col md={2}>
-                      <Image
-                        src={`${item.image}`}
-                        alt={item.name}
-                        fluid
-                        rounded
-                      />
+                      {`${process.env.REACT_APP_ENV}` === 'development' ? (
+                        <Image
+                          src={`${process.env.REACT_APP_IP}${item.image}`}
+                          alt={item.name}
+                          fluid
+                          rounded
+                        />
+                      ) : (
+                        <Image
+                          src={`${item.image}`}
+                          alt={item.name}
+                          fluid
+                          rounded
+                        />
+                      )}
                     </Col>
                     <Col md={3}>
                       <Link to={`/product/${item.product}`}>{item.name}</Link>

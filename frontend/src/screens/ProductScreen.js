@@ -91,7 +91,15 @@ const ProductScreen = () => {
           <Meta title={product.name} />
           <Row>
             <Col md={6}>
-              <Image src={`${product.image}`} alt={product.name} fluid />
+              {`${process.env.REACT_APP_ENV}` === 'development' ? (
+                <Image
+                  src={`${process.env.REACT_APP_IP}${product.image}`}
+                  alt={product.name}
+                  fluid
+                />
+              ) : (
+                <Image src={`${product.image}`} alt={product.name} fluid />
+              )}
             </Col>
             <Col md={3}>
               <ListGroup variant='flush'>

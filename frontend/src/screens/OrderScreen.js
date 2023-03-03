@@ -158,12 +158,21 @@ const OrderScreen = () => {
                     <ListGroup.Item key={index}>
                       <Row>
                         <Col md={1}>
-                          <Image
-                            src={`${item.image}`}
-                            alt={item.name}
-                            fluid
-                            rounded
-                          />
+                          {`${process.env.REACT_APP_ENV}` === 'development' ? (
+                            <Image
+                              src={`${process.env.REACT_APP_IP}${item.image}`}
+                              alt={item.name}
+                              fluid
+                              rounded
+                            />
+                          ) : (
+                            <Image
+                              src={`${item.image}`}
+                              alt={item.name}
+                              fluid
+                              rounded
+                            />
+                          )}
                         </Col>
                         <Col>
                           <Link to={`/product/${item.product}`}>
