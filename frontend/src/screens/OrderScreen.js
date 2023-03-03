@@ -164,6 +164,7 @@ const OrderScreen = () => {
                               alt={item.name}
                               fluid
                               rounded
+                              loading='lazy'
                             />
                           ) : (
                             <Image
@@ -171,6 +172,7 @@ const OrderScreen = () => {
                               alt={item.name}
                               fluid
                               rounded
+                              loading='lazy'
                             />
                           )}
                         </Col>

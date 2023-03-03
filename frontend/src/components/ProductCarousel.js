@@ -30,9 +30,15 @@ const ProductCarousel = () => {
                 src={`${process.env.REACT_APP_IP}${product.image}`}
                 alt={product.name}
                 fluid
+                loading='lazy'
               />
             ) : (
-              <Image src={`${product.image}`} alt={product.name} fluid />
+              <Image
+                src={`${product.image}`}
+                alt={product.name}
+                fluid
+                loading='lazy'
+              />
             )}
             <Carousel.Caption className='carousel-caption'>
               <h2>

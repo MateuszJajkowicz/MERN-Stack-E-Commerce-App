@@ -86,6 +86,7 @@ const PlaceOrderScreen = () => {
                               alt={item.name}
                               fluid
                               rounded
+                              loading='lazy'
                             />
                           ) : (
                             <Image
@@ -93,6 +94,7 @@ const PlaceOrderScreen = () => {
                               alt={item.name}
                               fluid
                               rounded
+                              loading='lazy'
                             />
                           )}
                         </Col>

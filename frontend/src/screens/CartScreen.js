@@ -69,6 +69,7 @@ const CartScreen = () => {
                           alt={item.name}
                           fluid
                           rounded
+                          loading='lazy'
                         />
                       ) : (
                         <Image
@@ -76,6 +77,7 @@ const CartScreen = () => {
                           alt={item.name}
                           fluid
                           rounded
+                          loading='lazy'
                         />
                       )}
                     </Col>

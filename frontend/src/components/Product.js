@@ -11,9 +11,10 @@ const Product = ({ product }) => {
           <Card.Img
             src={`${process.env.REACT_APP_IP}${product.image}`}
             variant='top'
+            loading='lazy'
           />
         ) : (
-          <Card.Img src={`${product.image}`} variant='top' />
+          <Card.Img src={`${product.image}`} variant='top' loading='lazy' />
         )}
       </Link>
 
