@@ -6,6 +6,8 @@ import Message from '../components/Message';
 import CheckoutSteps from '../components/CheckoutSteps';
 import { createOrder } from '../actions/orderActions';
 import { CART_RESET_ITEM } from '../constants/cartConstants';
+import { USER_PROFILE_RESET } from '../constants/userConstants';
+import { ORDER_CREATE_RESET } from '../constants/orderConstants';
 import Meta from '../components/Meta';
 
 const PlaceOrderScreen = () => {
@@ -27,6 +29,8 @@ const PlaceOrderScreen = () => {
   useEffect(() => {
     if (success) {
       navigate(`/order/${order._id}`);
+      dispatch({ type: USER_PROFILE_RESET });
+      dispatch({ type: ORDER_CREATE_RESET });
     }
     // eslint-disable-next-line
   }, [navigate, success]);
