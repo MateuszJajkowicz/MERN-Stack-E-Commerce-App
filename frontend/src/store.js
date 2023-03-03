@@ -84,6 +84,7 @@ const initialState = {
 const store = configureStore({
   reducer: reducers,
   preloadedState: initialState,
+  devTools: process.env.REACT_APP_ENV !== 'production',
 });
 
 export default store;
