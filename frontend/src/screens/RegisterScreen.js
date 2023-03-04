@@ -24,10 +24,13 @@ const RegisterScreen = () => {
   const userRegister = useSelector((state) => state.userRegister);
   const { loading, error, userInfo } = userRegister;
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo: loggedUserInfo } = userLogin;
+
   const redirect = location.search ? location.search.split('=')[1] : '/';
 
   useEffect(() => {
-    if (userInfo) {
+    if (userInfo || loggedUserInfo) {
       navigate(redirect);
     }
   }, [userInfo, navigate, redirect]);
