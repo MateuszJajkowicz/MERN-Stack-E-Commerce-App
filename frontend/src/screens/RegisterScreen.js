@@ -33,7 +33,7 @@ const RegisterScreen = () => {
     if (userInfo || loggedUserInfo) {
       navigate(redirect);
     }
-  }, [userInfo, navigate, redirect]);
+  }, [navigate, userInfo, redirect, loggedUserInfo]);
 
   const submitHandler = (e) => {
     e.preventDefault();
