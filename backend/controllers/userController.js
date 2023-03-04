@@ -146,10 +146,15 @@ const getUserById = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const updateUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
+  const admins = await User.find({ isAdmin: true });
 
-  if (user) {
+  if (user.isAdmin && admins.length === 1 && req.body.isAdmin === false) {
+    res.status(404);
+    throw new Error('There must be at least one admin');
+  } else if (user) {
     user.name = req.body.name || user.name;
     user.email = req.body.email || user.email;
+
     user.isAdmin = req.body.isAdmin;
 
     const updatedUser = await user.save();
