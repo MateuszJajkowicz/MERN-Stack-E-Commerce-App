@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Form, Button, Row, Col } from 'react-bootstrap';
+import { Form, Button, Row, Col, InputGroup } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
@@ -10,13 +10,13 @@ import Meta from '../components/Meta';
 
 const RegisterScreen = () => {
   const location = useLocation();
-
   const navigate = useNavigate();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [visible, setVisibility] = useState('false');
   const [message, setMessage] = useState(null);
 
   const dispatch = useDispatch();
@@ -72,22 +72,32 @@ const RegisterScreen = () => {
 
           <Form.Group controlId='password' className='pb-3'>
             <Form.Label>Password</Form.Label>
-            <Form.Control
-              type='password'
-              placeholder='Enter password'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            ></Form.Control>
+            <InputGroup>
+              <Form.Control
+                type={visible ? 'password' : 'text'}
+                placeholder='Enter password'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              ></Form.Control>
+              <InputGroup.Text onClick={() => setVisibility(!visible)}>
+                <i className={visible ? 'fas fa-eye-slash' : 'fas fa-eye'}></i>
+              </InputGroup.Text>
+            </InputGroup>
           </Form.Group>
 
           <Form.Group controlId='confirmPassword' className='pb-3'>
             <Form.Label>Confirm Password</Form.Label>
-            <Form.Control
-              type='password'
-              placeholder='Confirm password'
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            ></Form.Control>
+            <InputGroup>
+              <Form.Control
+                type={visible ? 'password' : 'text'}
+                placeholder='Confirm password'
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              ></Form.Control>
+              <InputGroup.Text onClick={() => setVisibility(!visible)}>
+                <i className={visible ? 'fas fa-eye-slash' : 'fas fa-eye'}></i>
+              </InputGroup.Text>
+            </InputGroup>
           </Form.Group>
 
           <Button type='submit' variant='primary'>

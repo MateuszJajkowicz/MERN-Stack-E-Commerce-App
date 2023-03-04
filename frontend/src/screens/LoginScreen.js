@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Form, Button, Row, Col } from 'react-bootstrap';
+import { Form, Button, Row, Col, InputGroup } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
-import { login } from '../actions/userActions';
 import Meta from '../components/Meta';
+import { login } from '../actions/userActions';
 
 const LoginScreen = () => {
-  const location = useLocation();
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const dispatch = useDispatch();
+  const [visible, setVisibility] = useState('false');
 
   const userLogin = useSelector((state) => state.userLogin);
   const { loading, error, userInfo } = userLogin;
@@ -44,6 +43,7 @@ const LoginScreen = () => {
         <Form onSubmit={submitHandler}>
           <Form.Group controlId='email' className='pb-3'>
             <Form.Label>Email Address</Form.Label>
+
             <Form.Control
               type='email'
               placeholder='Enter email'
@@ -54,12 +54,17 @@ const LoginScreen = () => {
 
           <Form.Group controlId='password' className='pb-3'>
             <Form.Label>Password</Form.Label>
-            <Form.Control
-              type='password'
-              placeholder='Enter password'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            ></Form.Control>
+            <InputGroup>
+              <Form.Control
+                type={visible ? 'password' : 'text'}
+                placeholder='Enter password'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              ></Form.Control>
+              <InputGroup.Text onClick={() => setVisibility(!visible)}>
+                <i className={visible ? 'fas fa-eye-slash' : 'fas fa-eye'}></i>
+              </InputGroup.Text>
+            </InputGroup>
           </Form.Group>
 
           <Button type='submit' variant='primary'>
