@@ -71,9 +71,12 @@ function App() {
                   element={<ProductEditScreen />}
                 />
                 <Route path='/search/:keyword' element={<HomeScreen />} />
-                <Route path='/page/:pageNumber' element={<HomeScreen />} />
                 <Route
-                  path='/search/:keyword/page/:pageNumber'
+                  path='/page/:pageNumber/:itemsPerPage'
+                  element={<HomeScreen />}
+                />
+                <Route
+                  path='/search/:keyword/page/:pageNumber/:itemsPerPage'
                   element={<HomeScreen />}
                 />
                 <Route path='/' element={<HomeScreen />} />

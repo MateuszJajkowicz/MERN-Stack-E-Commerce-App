@@ -42,13 +42,13 @@ select.form-control {
 .carousel img {
   max-height: 300px;
   padding: 30px;
-  margin: 40px;  
+  margin: 40px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .carousel a {
-  margin: 1rem auto -1rem auto;
+  margin: auto;
 }
 
 .carousel-indicators [data-bs-target] {
@@ -67,13 +67,32 @@ select.form-control {
   display: none;
 }
 
+.item-per-page-col {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.item-per-page-form {
+  display: flex;
+}
+
+.item-per-page-form-label {
+  width: 7rem;
+  display: flex;
+  align-items: center;
+}
+
+.items-per-page-form-control {
+  width: auto;
+}
+
 @media only screen and (max-width: 768px) {
   /* For mobile phones: */
   .carousel-caption h2 {
     font-size: 1rem !important;
   }
 
-  /* .carousel img {
-    margin-left: 0px;
-  } */
+  .carousel img {
+    padding: 40px;
+  }
 }

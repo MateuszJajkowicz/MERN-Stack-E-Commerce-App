@@ -5,9 +5,6 @@ import Product from '../models/productModel.js';
 // @route   GET /api/products
 // @access  Public
 const getProducts = asyncHandler(async (req, res) => {
-  const pageSize = 8;
-  const page = Number(req.query.pageNumber) || 1;
-
   const keyword = req.query.keyword
     ? {
         name: {
@@ -18,11 +15,23 @@ const getProducts = asyncHandler(async (req, res) => {
     : {};
 
   const count = await Product.countDocuments({ ...keyword });
+
+  const pageSize = Number(req.query.itemsPerPage);
+
+  const pages = Math.ceil(count / pageSize) || 1;
+
+  const page =
+    req.query.pageNumber > pages
+      ? pages
+      : pageSize > count
+      ? 1
+      : Number(req.query.pageNumber) || 1;
+
   const products = await Product.find({ ...keyword })
     .limit(pageSize)
-    .skip(pageSize * (page - 1));
+    .skip(count > pageSize ? pageSize * (page - 1) : 0);
 
-  res.json({ products, page, pages: Math.ceil(count / pageSize) });
+  res.json({ products, page, pages });
 });
 
 // @desc    Fetch single product
@@ -145,11 +154,10 @@ const createProductReview = asyncHandler(async (req, res) => {
 // @route   GET /api/products/top
 // @access  Public
 const getTopProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({}).sort({ rating: -1 }).limit(3)
+  const products = await Product.find({}).sort({ rating: -1 }).limit(3);
 
-  res.json(products)
-})
-
+  res.json(products);
+});
 
 export {
   getProducts,

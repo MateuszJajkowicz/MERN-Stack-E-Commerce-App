@@ -26,6 +26,7 @@ import {
   orderStatusReducer,
   orderUserListReducer,
 } from './reducers/orderReducers';
+import { itemsPerPageReducer } from './reducers/screenReducers';
 
 const reducers = {
   productList: productListReducer,
@@ -49,6 +50,7 @@ const reducers = {
   orderStatus: orderStatusReducer,
   orderUserList: orderUserListReducer,
   orderList: orderListReducer,
+  itemsPerPage: itemsPerPageReducer,
 };
 
 const cartItemsFromStorage = localStorage.getItem('cartItems')
