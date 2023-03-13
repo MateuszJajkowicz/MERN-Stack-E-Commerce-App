@@ -58,7 +58,7 @@ export const register = (name, email, password) => async (dispatch) => {
   }
 };
 
-export const login = (email, password) => async (dispatch) => {
+export const login = (email, password, accessToken) => async (dispatch) => {
   try {
     dispatch({ type: USER_LOGIN_REQUEST });
 
@@ -70,7 +70,7 @@ export const login = (email, password) => async (dispatch) => {
 
     const { data } = await axios.post(
       '/api/users/login',
-      { email, password },
+      accessToken ? { googleAccessToken: accessToken } : { email, password },
       config
     );
 

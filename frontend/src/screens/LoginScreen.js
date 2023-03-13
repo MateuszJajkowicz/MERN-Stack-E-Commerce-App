@@ -7,6 +7,7 @@ import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
 import Meta from '../components/Meta';
 import { login } from '../actions/userActions';
+import { useGoogleLogin } from '@react-oauth/google';
 
 const LoginScreen = () => {
   const dispatch = useDispatch();
@@ -21,6 +22,12 @@ const LoginScreen = () => {
   const { loading, error, userInfo } = userLogin;
 
   const redirect = location.search ? location.search.split('=')[1] : '';
+
+  function handleGoogleLoginSuccess(tokenResponse) {
+    const accessToken = tokenResponse.access_token;
+    dispatch(login(null, null, accessToken));
+  }
+  const googleLogin = useGoogleLogin({ onSuccess: handleGoogleLoginSuccess });
 
   useEffect(() => {
     if (userInfo) {
@@ -38,6 +45,11 @@ const LoginScreen = () => {
       <Meta title='Welcome To E-Commerce | Login' />
       <FormContainer>
         <h1>Sign In</h1>
+        <div className='d-flex justify-content-center'>
+          <Button onClick={() => googleLogin()} className='mb-3'>
+            <i className='fa-brands fa-google'></i> Sign in with google
+          </Button>
+        </div>
         {error && <Message variant='danger'>{error}</Message>}
         {loading && <Loader />}
         <Form onSubmit={submitHandler}>

@@ -1,4 +1,6 @@
 import asyncHandler from 'express-async-handler';
+import axios from 'axios';
+import jwt from 'jsonwebtoken';
 import generateToken from '../utils/generateToken.js';
 import User from '../models/userModel.js';
 
@@ -39,21 +41,65 @@ const registerUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users/login
 // @access  Public
 const authUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  if (req.body.googleAccessToken) {
+    // gogole-auth
+    const { googleAccessToken } = req.body;
 
-  const user = await User.findOne({ email });
+    axios
+      .get('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: {
+          Authorization: `Bearer ${googleAccessToken}`,
+        },
+      })
+      .then(async (response) => {
+        const name = response.data.name;
+        const email = response.data.email;
 
-  if (user && (await user.matchPassword(password))) {
-    res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      isAdmin: user.isAdmin,
-      token: generateToken(user._id),
-    });
+        const existingUser = await User.findOne({ email });
+        const user = existingUser
+          ? existingUser
+          : await User.create({
+              email,
+              name,
+            });
+
+        const token = jwt.sign(
+          {
+            email: user.email,
+            id: user._id,
+          },
+          process.env.JWT_SECRET,
+          { expiresIn: '1h' }
+        );
+
+        res.status(200).json({
+          name: user.name,
+          email: user.email,
+          isAdmin: user.isAdmin,
+          _id: user._id,
+          token,
+        });
+      })
+      .catch((err) => {
+        res.status(401).json({ message: 'Invalid access token!' });
+      });
   } else {
-    res.status(401);
-    throw new Error('Invalid email or password');
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (user && (await user.matchPassword(password))) {
+      res.json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        token: generateToken(user._id),
+      });
+    } else {
+      res.status(401);
+      throw new Error('Invalid email or password');
+    }
   }
 });
 
