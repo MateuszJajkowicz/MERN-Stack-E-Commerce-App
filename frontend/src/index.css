@@ -86,10 +86,6 @@ select.form-control {
   width: auto;
 }
 
-div.dropdown-menu.show {
-  left: -14.5rem;
-}
-
 @media only screen and (max-width: 768px) {
   /* For mobile phones: */
   .carousel-caption h2 {
@@ -98,5 +94,9 @@ div.dropdown-menu.show {
 
   .carousel img {
     padding: 40px;
+  }
+
+  .cart img {
+    width: 30%;
   }
 }

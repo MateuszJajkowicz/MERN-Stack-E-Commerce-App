@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 const CartItem = ({ product }) => {
   return (
     <Row>
-      <Col md={5}>
+      <Col md={5} className='cart'>
         {`${process.env.REACT_APP_ENV}` === 'development' ? (
           <Image
             src={`${process.env.REACT_APP_IP}${product.image}`}
